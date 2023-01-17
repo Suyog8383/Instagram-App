@@ -1,9 +1,9 @@
-import { useContext, useState } from 'react';
+import { createContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 import Modal from '@mui/material/Modal';
-import FilterTab, { filterContext } from './FilterTab';
+import FilterTab from './FilterTab';
 
 const style = {
   display: 'flex',
@@ -21,8 +21,13 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
+export const filterContext = createContext();
+const FilterContextProvider = filterContext.Provider;
+
 const BasicModal = () => {
-  const { filterClass } = useContext(filterContext);
+  const [filterClass, setFilterClass] = useState('');
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -34,37 +39,45 @@ const BasicModal = () => {
   };
 
   return (
-    <div>
-      <Button onClick={handleOpen}>Create</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          {imageFile ? (
-            <>
-              <FilterTab />
-              <img
-                src={imageFile}
-                className={filterClass}
-                style={{ height: '300px', width: '300px' }}
-                alt=""
-              />
-            </>
-          ) : (
-            <>
-              <h2>Create new post</h2>
-              <Button variant="contained" component="label">
-                Select from computer
-                <input hidden accept="image/*" onChange={handleInputChange} multiple type="file" />
-              </Button>
-            </>
-          )}
-        </Box>
-      </Modal>
-    </div>
+    <FilterContextProvider value={{ filterClass, setFilterClass }}>
+      <div>
+        <Button onClick={handleOpen}>Create</Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            {imageFile ? (
+              <>
+                <FilterTab />
+                <img
+                  src={imageFile}
+                  className={filterClass}
+                  style={{ height: '300px', width: '300px' }}
+                  alt=""
+                />
+              </>
+            ) : (
+              <>
+                <h2>Create new post</h2>
+                <Button variant="contained" component="label">
+                  Select from computer
+                  <input
+                    hidden
+                    accept="image/*"
+                    onChange={handleInputChange}
+                    multiple
+                    type="file"
+                  />
+                </Button>
+              </>
+            )}
+          </Box>
+        </Modal>
+      </div>
+    </FilterContextProvider>
   );
 };
 
