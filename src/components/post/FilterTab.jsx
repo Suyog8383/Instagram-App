@@ -1,35 +1,41 @@
-import React, { createContext, useContext, useState } from 'react';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import { Link, MenuItem, Select } from '@mui/material';
+import { useContext } from 'react';
 import { filterValues } from './Utils';
 import '../post/instagram.css';
-import BasicModal, { filterContext } from './Post';
+import { filterContext } from './Post';
+
 
 const FilterTab = () => {
   const { filterClass, setFilterClass } = useContext(filterContext);
 
   const handleChange = (e) => {
     setFilterClass(e.target.value);
+    console.log('@SN ', e.target.value);
   };
-  console.log('@SN ', filterClass);
+  const style = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    overflow: 'scroll',
+    height: '360px',
+    gap: '2px',
+  };
   return (
     <>
-      <div>
-        <Box>
-          {/* <Link>Back</Link> */}
-          <FormControl fullWidth>
-            <InputLabel>Filter</InputLabel>
-            <Select value={filterClass} label="Age" onChange={handleChange}>
-              {filterValues.map((item, index) => (
-                <MenuItem value={item.class} key={index}>
-                  {item.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
+      <h3>Filters</h3>
+      <div className="container" style={style} value={filterClass}>
+        {filterValues.map((item, index) => {
+          return (
+            <div key={index}>
+              <button
+                style={{ width: '136px', fontSize: 'smaller' }}
+                onClick={handleChange}
+                value={item.class}
+              >
+                <img src={item.img} alt="" />
+                {item.name}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </>
   );
